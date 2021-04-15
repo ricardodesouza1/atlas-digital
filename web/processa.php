@@ -31,7 +31,7 @@ if($_FILES["zip_file"]["name"]) {
 
     $continue = strtolower($name[1]) == 'zip' ? true : false;
     if(!$continue) {
-        $message = "The file you are trying to upload is not a .zip file. Please try again.";
+        $message = "Este arquvo não é um .zip";
     }
 
   $path = dirname(__FILE__).'/';  
@@ -79,12 +79,21 @@ if (isset($_GET['dado'])){
     
     }
     
-if (isset($_GET['editar'])){
-        $id_dado_edit = $_GET['editar'];
-        $mapas_edit = pg_query($dbcon, "SELECT * FROM mapas where id = '".$id_dado_edit."'");
+if (isset($_POST['edit_id'])){
+            $id_dado_edit = $_POST['edit_id'];
+            $edit_nome = $_POST['edit_nome'];
+            $edit_descricao = $_POST['edit_descricao'];
+            $edit_status = $_POST['edit_status'];
+            $edit_codigo_cadastro = $_POST['edit_codigo_cadastro'];
+        
+            $update = pg_query($dbcon, "UPDATE mapas SET  nome = '" . $edit_nome . "',  descricao = '" . $edit_descricao . "',  status = '" . $edit_status . "',  codigo = '" . $edit_codigo_cadastro . "' where id = '".$id_dado_edit."'");
+            $message = "Sucesso!!!";
+                
+        } else {    
+            $message = "Erro!!!";
+}
     
         
-    }
 function delTree($dir) { 
         $files = array_diff(scandir($dir), array('.','..')); 
         foreach ($files as $file) { 
@@ -231,25 +240,25 @@ function deletemapa($id_dado){
 <div id="editModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form enctype="multipart/form-data" method="post" id="edit_id">
+            <form enctype="multipart/form-data" method="post" action="">
                 <div class="modal-body">
-                
+                    <input type="text" class="form-control" name="edit_id" id="edit_id" style="display: none;" >
                     <input type="text" class="form-control" name="edit_nome" id="edit_nome" placeholder="Nome" >
                     <p></p>
                     <textarea type="text" class="form-control" name="edit_descricao" id="edit_descricao" placeholder="Descrição"  ></textarea>
                     <p></p>
-                    <input type="file" class="form-control" name="edit_zip_file" required />
-                    <p></p>
-                    <select class="form-control" name="edit_status" id="edit_status">
+                    <!--<input type="file" class="form-control" name="edit_zip_file" required />
+                    <p></p>-->
+                    <select class="form-control" name="edit_status" id="edit_status" onchange="habilitar_edit(this.value)">
                        <option value="1">Público</option>
                        <option value="2">Privado</option>
-                   </select>
+                   </select> 
                    <p></p>
                    <input type="text" class="form-control" id="edit_codigo"  name="edit_codigo_cadastro" placeholder="Código" disabled="">
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                    <input type="submit" name ="submit" class="btn btn-success"  value="salvar">
+                    <input type="submit" name ="submit" class="btn btn-success"  value="Editar">
                 </div>
                 <br><br><br>
                 
@@ -257,28 +266,6 @@ function deletemapa($id_dado){
         </div>
     </div> 
 </div>
-<!--
-<div id="deleteEmployeeModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">
-                        <h4 class="modal-title">Deletar Mapa</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Você tem certeza que deseja deletar esse Mapa?</p>
-                        <p class="text-warning"><small>Essa ação não pode ser revertida.</small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" id="deletando" onclick="deletar()" class="btn btn-danger" value="Delete">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
--->
 <script>
          window.status_id = 0;
         $(document).ready(function() {
@@ -297,7 +284,10 @@ function deletemapa($id_dado){
                         $("#edit_nome").val(msg["nome"]);
                         $("#edit_descricao").val(msg["descricao"]);
                         $("#edit_status").val(msg["status"]);
-                        $("#edit_codigo").val(msg["codigo"]);
+                        if($("#edit_codigo").val(msg["codigo"]) != ""){
+                            document.getElementById('edit_codigo').removeAttribute("disabled");
+
+                        }
 
                     }
 
@@ -346,6 +336,17 @@ function deletemapa($id_dado){
 
                 if (value == 1) {
                     input.disabled = true;
+                    input.value='';
+                } else {
+                    input.disabled = false;
+                }
+             }
+             function habilitar_edit(value) {
+                var input = document.getElementById("edit_codigo");
+
+                if (value == 1) {
+                    input.disabled = true;
+                    input.value='';
                 } else {
                     input.disabled = false;
                 }
