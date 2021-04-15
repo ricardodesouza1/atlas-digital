@@ -1,11 +1,8 @@
 <?php 
 error_reporting(E_ERROR | E_PARSE);
 
-//error_reporting(E_ERROR | E_PARSE);
 global $id_usuario;
 $id_usuario = $_GET["id"];
-//$con_string = "host=localhost dbname=atlas_v4 user=postgres password='123'";
-//if(!$dbcon = pg_connect($con_string)) die ("Erro ao conectar ao banco<br>".pg_last_error($dbcon));
 include "includes/connect.php";
 
 function rmdir_recursive($dir) {
@@ -37,17 +34,13 @@ if($_FILES["zip_file"]["name"]) {
         $message = "The file you are trying to upload is not a .zip file. Please try again.";
     }
 
-  /* PHP current path */
-  $path = dirname(__FILE__).'/';  // absolute path to the directory where zipper.php is in
-  $filenoext = basename ($filename, '.zip');  // absolute path to the directory where zipper.php is in (lowercase)
-  $filenoext = basename ($filenoext, '.ZIP');  // absolute path to the directory where zipper.php is in (when uppercase)
+  $path = dirname(__FILE__).'/';  
+  $filenoext = basename ($filename, '.zip');  
+  $filenoext = basename ($filenoext, '.ZIP');  
 
-  $targetdir = $filenoext; // target directory
-  $targetzip = $path . $filename; // target zip file
+  $targetdir = $filenoext; 
+  $targetzip = $path . $filename; 
   $diretrio = 'mapas/'.$targetdir;
-  /* create directory if not exists', otherwise overwrite */
-  /* target directory is same as filename without extension */
-    #$bdcon = pg_connect("dbname=atlas2");
 
     
   if (is_dir($diretrio))  rmdir_recursive ($diretrio);
@@ -56,14 +49,13 @@ if($_FILES["zip_file"]["name"]) {
   mkdir($diretrio, 0777);
   
 
-    
-  /* here it is really happening */
+
 
     if(move_uploaded_file($source, $targetzip)) {
         $zip = new ZipArchive();
-        $x = $zip->open($targetzip);  // open the zip file to extract
+        $x = $zip->open($targetzip);  
         if ($x === true) {
-            $zip->extractTo($diretrio); // place in the directory with same name  
+            $zip->extractTo($diretrio); 
             $zip->close();
 
             unlink($targetzip);
@@ -71,23 +63,14 @@ if($_FILES["zip_file"]["name"]) {
         $nome = $_POST['nome'];
         $descricao = $_POST['descricao'];
         $status = $_POST['status'];
-        $estado = $_POST['estado'];
-        $cidade = $_POST['cidade'];
+        $codigo_cadastro = $_POST['codigo_cadastro'];
         $enderco = $diretrio.'/index.html';
-        $insertcidades =  pg_query($dbcon, "INSERT INTO cidades VALUES(default, '".$cidade."','".$estado."');");
-        
-            if($insertcidades){
-                $id_cidade = pg_query($dbcon, "SELECT id FROM cidades ORDER BY id DESC LIMIT 1");
-                if($id_cidade){
-                    while ($resultado_city = pg_fetch_array($id_cidade)) {
-                        $id_city = $resultado_city["id"];
-                    }
-                    $sql_mapas =  pg_query($dbcon,"INSERT INTO mapas VALUES(default, '".$enderco."', '".$nome."', '".$descricao."','".$status."', '".$id_city."', '".$id_usuario."');");
-                    $message = "Your .zip file was uploaded and unpacked.";
-                }
-            }
+    
+        $sql_mapas =  pg_query($dbcon,"INSERT INTO mapas VALUES(default, '".$enderco."', '".$nome."', '".$descricao."','".$status."', '".$codigo_cadastro."', '".$id_usuario."');");
+        $message = "Sucesso!!!";
+            
     } else {    
-        $message = "There was a problem with the upload. Please try again.";
+        $message = "Erro!!!";
     }
 }
 if (isset($_GET['dado'])){
@@ -102,35 +85,39 @@ if (isset($_GET['editar'])){
     
         
     }
+function delTree($dir) { 
+        $files = array_diff(scandir($dir), array('.','..')); 
+        foreach ($files as $file) { 
+          (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file"); 
+        } 
+        return rmdir($dir); 
+}
 
 
 function deletemapa($id_dado){    
     
     include "includes/connect.php";
-   // $con_string = "host=localhost dbname=atlas_v4 user=postgres password='123'";
-   // if(!$dbconn = pg_connect($con_string)) die ("Erro ao conectar ao banco<br>".pg_last_error($dbconn));
-    
-    $id_cidade = pg_query($dbcon, "SELECT cidade_id, end_arquivo FROM mapas where id = '".$id_dado."'");
+    $id_cidade = pg_query($dbcon, "SELECT end_arquivo FROM mapas where id = '".$id_dado."'");
  if($id_cidade){
-    while ($resultado_city = pg_fetch_array($id_cidade)) {
-        $id_city = $resultado_city["cidade_id"];
-        $end = $resultado_city["end_arquivo"];
+    while ($resultado = pg_fetch_array($id_cidade)) {
+        $end = $resultado["end_arquivo"];
     }
      $result = pg_query($dbcon, "DELETE FROM mapas where id = '" . $id_dado . "';");
      if($result ){
-        $deletcidade = pg_query($dbcon, "DELETE FROM cidades where id = '".$id_city ."'");
-        if ($deletcidade) {
-        
+        $text = strstr($end, "/index.html", true); 
+        delTree($text);
+            
             return pg_query($deletcidade);
         } else {
             
-        }
      }
  }
 } 
 
 
- $exec_sql_select = pg_query($dbcon, "select mapas.id as id_mapa, mapas.nome as titulo, cidades.nome as cidade, descricao, end_arquivo from mapas inner join cidades on mapas.cidade_id = cidades.id where mapas.usuario_id = '".$id_usuario."';");
+
+
+ $exec_sql_select = pg_query($dbcon, "select mapas.id as id_mapa, mapas.nome as titulo, cidades.nome as cidade, descricao, end_arquivo from mapas inner join usuario on mapas.usuario_id = usuario.id inner join instituicao on usuario.instituicao_id = instituicao.id inner join cidades on instituicao.cidade_id = cidades.id where mapas.usuario_id = '".$id_usuario."';");
          
           
 ?>
@@ -187,6 +174,15 @@ function deletemapa($id_dado){
                 });
             
             });
+            function habilitar(value) {
+                var input = document.getElementById("codigo_cadastro");
+
+                if (value == 1) {
+                    input.disabled = true;
+                } else {
+                    input.disabled = false;
+                }
+             }
            
     </script>
 
@@ -236,10 +232,10 @@ function deletemapa($id_dado){
                     <td><?php echo $dado['cidade']; ?></td>  
                     <td>
                     <a href="?id=<?php echo $id_usuario; ?>&editar=<?php echo  $dado['id_mapa']; ?>" at="<?php echo  $dado['id_mapa']; ?>" class="edit"
-                       data-toggle="modal" data-target="#editEmployeeModal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                   <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo  $dado['id_mapa']; ?>" class="delete"
+                       data-toggle="modal" data-target="#editModal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                   <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo  $dado['id_mapa']; ?>" onclick="return confirm('Deseja mesmo excluir este mapa?');"class="delete"
                        data-toggle="modal" ><i class="material-icons" data-toggle="tooltip"
-                                              title="Delete">&#xE872;</i></a> 
+                                              title="Delete" >&#xE872;</i></a> 
                     <a href="#" onCLick="window.open('<?php echo "http://localhost/Atlas_digital/".$dado['end_arquivo'];?>');"><i title="Visualizar" class="material-icons" data-toggle="tooltip">&#xe417;</i></a>
                 </td>                
 				</tr>
@@ -266,18 +262,12 @@ function deletemapa($id_dado){
                     <p></p>
                     <input type="file" class="form-control" name="zip_file" required/>
                     <p></p>
-                    <select class="form-control" placeholder="Estados" name="estado" id="estados">
-                       <option value=""></option>
-                   </select>
-                   <p></p>
-                    <select class="form-control" placeholder="Estados" name="cidade" id="cidades">
-                       <option value=""></option>
-                   </select>
-                   <p></p> 
-                    <select class="form-control" name="status">
+                    <select class="form-control" name="status" onchange="habilitar(this.value)">
                        <option value="1">Público</option>
                        <option value="2">Privado</option>
                    </select>
+                   <p></p>
+                   <input type="text" class="form-control" id="codigo_cadastro"  name="codigo_cadastro" placeholder="Código" disabled="">
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -290,7 +280,7 @@ function deletemapa($id_dado){
     </div> 
 </div>
 
-<div id="addEmployeeModal" class="modal fade">
+<div id="editModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form enctype="multipart/form-data" method="post" action="">
@@ -305,18 +295,12 @@ function deletemapa($id_dado){
                     <p></p>
                     <input type="file" class="form-control" name="edit_zip_file" required value="<?php echo $resultado['end_arquivo']; ?>"/>
                     <p></p>
-                    <select class="form-control" placeholder="Estados" name="edit_estado" id="estados" value="<?php echo $resultado['estado'];?> >
-                       <option value=""></option>
-                   </select>
-                   <p></p>
-                    <select class="form-control" placeholder="Estados" name="edit_cidade" id="cidades">
-                       <option value=""></option>
-                   </select>
-                   <p></p>
                     <select class="form-control" name="edit_status">
                        <option value="1">Público</option>
                        <option value="2">Privado</option>
                    </select>
+                   <p></p>
+                   <input type="text" class="form-control" id="codigo_cadastro"  name="edit_codigo_cadastro" placeholder="Código" disabled="">
                 </div>
                 <?php } ?>
                 <div class="modal-footer">

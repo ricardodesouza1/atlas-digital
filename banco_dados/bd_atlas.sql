@@ -18,7 +18,7 @@ CREATE TABLE usuario (
     senha VARCHAR(50) NOT NULL,
     tipo int NOT NULL,
     instituicao_id int NOT NULL,
-    FOREIGN KEY (instituicao_id) REFERENCES cidades (instituicao)
+    FOREIGN KEY (instituicao_id) REFERENCES instituicao (id)
  
 );
 CREATE TABLE mapas (
@@ -29,5 +29,5 @@ CREATE TABLE mapas (
     status int NOT NULL,
     codigo VARCHAR(40),
     usuario_id int NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES cidades (usuario)
+    FOREIGN KEY (usuario_id) REFERENCES usuario (id)
 );

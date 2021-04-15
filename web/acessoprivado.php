@@ -3,10 +3,10 @@ error_reporting(E_ERROR | E_PARSE);
 include "includes/connect.php";
 
 if (isset($_POST['codigo'])){
-    $cidade = $_POST['codigo'];
+    $codigo = $_POST['codigo'];
     
 
-    $exec_sql_select = pg_query($dbcon, "select mapas.id as id_mapa, mapas.nome as titulo, cidades.nome as cidade, descricao, end_arquivo from mapas inner join cidades on mapas.cidade_id = cidades.id WHERE mapas.id < 21 ;");
+    $exec_sql_select = pg_query($dbcon, "select mapas.id as id_mapa, mapas.nome as titulo, cidades.nome as cidade, descricao, end_arquivo from mapas inner join usuario on mapas.usuario_id = usuario.id inner join instituicao on usuario.instituicao_id = instituicao.id inner join cidades on instituicao.cidade_id = cidades.id WHERE mapas.codigo = '".$codigo."' ;");
 
     
     }
