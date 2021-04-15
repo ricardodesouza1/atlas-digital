@@ -135,8 +135,175 @@ function deletemapa($id_dado){
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 
 </head>
+
+
+<body >
+
+<a href="index.php" onclick=""><img id="logo" src="imagens/logo.jpg"/></a>
+      
+      <div id="menuu">
+            <ul>
+              <li><a id="inicial" href="index.php" onclick="">Página inicial</a></li>
+              <li><a id="ajuda" href="#ajuda" onclick="curSec(this.id)">Ajuda</a></li>
+              <li><a id="logut" href="index.php" onclick="">Logut</a></li>
+            </ul>
+
+        </div>
+
+
+<div class="container">
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>Mapas Cadastrados</h2>
+                </div>
+                <div class="col-sm-6">
+                <button type="button"  id="add_bt" data-toggle="modal" data-target="#addEmployeeModal">Adicionar</button> 
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-hover">
+
+			<tr>
+                <td>Título</td>
+				<td>Descrição</td>
+                <td>Cidade</td>
+                <td>Ações</td>
+
+			</tr>
+			<?php 
+			 while	($dado = pg_fetch_array($exec_sql_select)) {
+				
+			 ?>
+				<tr>
+					
+                    <td><?php echo $dado['titulo']; ?></td>
+					<td><?php echo $dado['descricao']; ?></td> 
+                    <td><?php echo $dado['cidade']; ?></td>  
+                    <td>
+                    <a href="#editModal" at="<?php echo $dado["id_mapa"]; ?>" class="edit" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                   <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo $dado['id_mapa']; ?>" onclick="return confirm('Deseja mesmo excluir este mapa?');"class="delete" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a> 
+                    <a href="#" onCLick="window.open('<?php echo "http://localhost/Atlas_digital/".$dado['end_arquivo'];?>');"><i title="Visualizar" class="material-icons" data-toggle="tooltip">&#xe417;</i></a>
+                </td>                
+				</tr>
+                
+			<?php 
+				}
+
+		
+			
+			 ?>
+		</table>
+    </div>
+	
+</div>
+
+<div id="addEmployeeModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" method="post" action="">
+                <div class="modal-body">
+                    <input type="text" class="form-control" name="nome" placeholder="Título"  value="<?php if(isset($resposta)){echo $resposta['nome'];} ?>">
+                    <p></p>
+                    <textarea type="text" class="form-control" name="descricao" placeholder="Descrição"   value="<?php if(isset($resposta)){echo $resposta['descricao'];} ?>"></textarea>
+                    <p></p>
+                    <input type="file" class="form-control" name="zip_file" required/>
+                    <p></p>
+                    <select class="form-control" name="status" onchange="habilitar(this.value)">
+                       <option value="1">Público</option>
+                       <option value="2">Privado</option>
+                   </select>
+                   <p></p>
+                   <input type="text" class="form-control" id="codigo_cadastro"  name="codigo_cadastro" placeholder="Código" disabled="">
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" name ="submit" class="btn btn-success"  value="salvar">
+                </div>
+                <br><br><br>
+                
+            </form>
+        </div>
+    </div> 
+</div>
+
+<div id="editModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" method="post" id="edit_id">
+                <div class="modal-body">
+                
+                    <input type="text" class="form-control" name="edit_nome" id="edit_nome" placeholder="Nome" >
+                    <p></p>
+                    <textarea type="text" class="form-control" name="edit_descricao" id="edit_descricao" placeholder="Descrição"  ></textarea>
+                    <p></p>
+                    <input type="file" class="form-control" name="edit_zip_file" required />
+                    <p></p>
+                    <select class="form-control" name="edit_status" id="edit_status">
+                       <option value="1">Público</option>
+                       <option value="2">Privado</option>
+                   </select>
+                   <p></p>
+                   <input type="text" class="form-control" id="edit_codigo"  name="edit_codigo_cadastro" placeholder="Código" disabled="">
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" name ="submit" class="btn btn-success"  value="salvar">
+                </div>
+                <br><br><br>
+                
+            </form>
+        </div>
+    </div> 
+</div>
+<!--
+<div id="deleteEmployeeModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar Mapa</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Você tem certeza que deseja deletar esse Mapa?</p>
+                        <p class="text-warning"><small>Essa ação não pode ser revertida.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                        <input type="submit" id="deletando" onclick="deletar()" class="btn btn-danger" value="Delete">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+-->
 <script>
-        
+         window.status_id = 0;
+        $(document).ready(function() {
+            $("a.edit").click( function() {
+                window.status_id = $(this).attr('at');
+                $.ajax({
+                    type: "GET",
+                    data: {
+                        id: status_id
+                    },
+                    dataType: 'json',
+                    url: "selecionarMapa.php",
+                    success: function(msg) {
+                        $("#edit_id").val(msg["id"])
+                        $("#edit_end").val(msg["end"])
+                        $("#edit_nome").val(msg["nome"]);
+                        $("#edit_descricao").val(msg["descricao"]);
+                        $("#edit_status").val(msg["status"]);
+                        $("#edit_codigo").val(msg["codigo"]);
+
+                    }
+
+                });
+            });
+        });
 
         $(document).ready(function () {
                 
@@ -185,156 +352,6 @@ function deletemapa($id_dado){
              }
            
     </script>
-
-<body >
-
-<a href="index.php" onclick=""><img id="logo" src="imagens/logo.jpg"/></a>
-      
-      <div id="menuu">
-            <ul>
-              <li><a id="inicial" href="index.php" onclick="">Página inicial</a></li>
-              <li><a id="ajuda" href="#ajuda" onclick="curSec(this.id)">Ajuda</a></li>
-              <li><a id="logut" href="index.php" onclick="">Logut</a></li>
-            </ul>
-
-        </div>
-
-
-<div class="container">
-    <div class="table-wrapper">
-        <div class="table-title">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h2>Mapas Cadastrados</h2>
-                </div>
-                <div class="col-sm-6">
-                <button type="button"  id="add_bt" data-toggle="modal" data-target="#addEmployeeModal">Adicionar</button> 
-                </div>
-            </div>
-        </div>
-        <table class="table table-striped table-hover">
-
-			<tr>
-                <td>Título</td>
-				<td>Descrição</td>
-                <td>Cidade</td>
-                <td>Ações</td>
-
-			</tr>
-			<?php 
-			 while	($dado = pg_fetch_array($exec_sql_select)) {
-				
-			 ?>
-				<tr>
-					
-                    <td><?php echo $dado['titulo']; ?></td>
-					<td><?php echo $dado['descricao']; ?></td> 
-                    <td><?php echo $dado['cidade']; ?></td>  
-                    <td>
-                    <a href="?id=<?php echo $id_usuario; ?>&editar=<?php echo  $dado['id_mapa']; ?>" at="<?php echo  $dado['id_mapa']; ?>" class="edit"
-                       data-toggle="modal" data-target="#editModal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                   <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo  $dado['id_mapa']; ?>" onclick="return confirm('Deseja mesmo excluir este mapa?');"class="delete"
-                       data-toggle="modal" ><i class="material-icons" data-toggle="tooltip"
-                                              title="Delete" >&#xE872;</i></a> 
-                    <a href="#" onCLick="window.open('<?php echo "http://localhost/Atlas_digital/".$dado['end_arquivo'];?>');"><i title="Visualizar" class="material-icons" data-toggle="tooltip">&#xe417;</i></a>
-                </td>                
-				</tr>
-                
-			<?php 
-				}
-
-		
-			
-			 ?>
-		</table>
-    </div>
-	
-</div>
-
-<div id="addEmployeeModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form enctype="multipart/form-data" method="post" action="">
-                <div class="modal-body">
-                    <input type="text" class="form-control" name="nome" placeholder="Título"  value="<?php if(isset($resposta)){echo $resposta['nome'];} ?>">
-                    <p></p>
-                    <textarea type="text" class="form-control" name="descricao" placeholder="Descrição"   value="<?php if(isset($resposta)){echo $resposta['descricao'];} ?>"></textarea>
-                    <p></p>
-                    <input type="file" class="form-control" name="zip_file" required/>
-                    <p></p>
-                    <select class="form-control" name="status" onchange="habilitar(this.value)">
-                       <option value="1">Público</option>
-                       <option value="2">Privado</option>
-                   </select>
-                   <p></p>
-                   <input type="text" class="form-control" id="codigo_cadastro"  name="codigo_cadastro" placeholder="Código" disabled="">
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                    <input type="submit" name ="submit" class="btn btn-success"  value="salvar">
-                </div>
-                <br><br><br>
-                
-            </form>
-        </div>
-    </div> 
-</div>
-
-<div id="editModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form enctype="multipart/form-data" method="post" action="">
-                <div class="modal-body">
-                <?php
-                 while ($resultado = pg_fetch_array($mapas_edit)) {
-
-                ?>
-                    <input type="text" class="form-control" name="edit_nome" placeholder="Nome"  value="<?php echo $resultado['nome'];?>">
-                    <p></p>
-                    <textarea type="text" class="form-control" name="edit_descricao" placeholder="Descrição"   value="<?php echo $resultado['descricao']; ?>"></textarea>
-                    <p></p>
-                    <input type="file" class="form-control" name="edit_zip_file" required value="<?php echo $resultado['end_arquivo']; ?>"/>
-                    <p></p>
-                    <select class="form-control" name="edit_status">
-                       <option value="1">Público</option>
-                       <option value="2">Privado</option>
-                   </select>
-                   <p></p>
-                   <input type="text" class="form-control" id="codigo_cadastro"  name="edit_codigo_cadastro" placeholder="Código" disabled="">
-                </div>
-                <?php } ?>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                    <input type="submit" name ="submit" class="btn btn-success"  value="salvar">
-                </div>
-                <br><br><br>
-                
-            </form>
-        </div>
-    </div> 
-</div>
-<!--
-<div id="deleteEmployeeModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">
-                        <h4 class="modal-title">Deletar Mapa</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Você tem certeza que deseja deletar esse Mapa?</p>
-                        <p class="text-warning"><small>Essa ação não pode ser revertida.</small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" id="deletando" onclick="deletar()" class="btn btn-danger" value="Delete">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
--->
 
 </body>
 </html>
