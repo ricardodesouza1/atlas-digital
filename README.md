@@ -1,6 +1,6 @@
 # Atlas Digital InterativeGeo - UTFPR
 
-Este atlas foi desenvolvido como um trabalho de TCC, com autoria do acadêmico Ricardo de Souza, na UTFPR, Francisco Beltrão, so a orientação do professor [Michel Albonico](michelalbonico.github.io) e co-orientação do professor Fernando Cézar Manosso.
+Este atlas foi desenvolvido como um trabalho de TCC, com autoria do acadêmico Ricardo de Souza, na UTFPR, Francisco Beltrão, so a orientação do professor [Michel Albonico](https://michelalbonico.github.io/) e co-orientação do professor Fernando Cézar Manosso.
 
 # Configurando o Ambiente
 
