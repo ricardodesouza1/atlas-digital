@@ -81,10 +81,22 @@ and open the template in the editor.
       <div id="menuu">
             <ul>
               <li><a id="inicial" href="index.php" onclick="">Página inicial</a></li>
-              <li><a id="recurso" href="atlas2021/index.html" onclick="curSec(this.id)">Mapas</a></li>
+              <li><a id="recurso" href="mapas.php" onclick="curSec(this.id)">Mapas</a></li>
               <li><a id="ajuda" href="#ajuda" onclick="curSec(this.id)">Ajuda</a></li>
-              <li><a id="conta" href="login.php" onclick="">Fazer login</a></li>
-              <li><a id="entrar" href="cadastrar.php" onclick="">Cadastre-se</a></li>
+              <?php
+                  session_start();
+                  if($_SESSION["id"]==""){
+              ?>
+                        <li><a id="conta" href="login.php" onclick="">Fazer login</a></li>
+                        <li><a id="entrar" href="cadastrar.php" onclick="">Cadastre-se</a></li>
+              <?php 
+                  }else{
+              ?>
+                      <li><a id="logut" href="index.php?sair=ok" onclick="">Logut</a></li>
+              <?php 
+                  }
+              ?>
+
             </ul>
         </div>
     <div class="container">
