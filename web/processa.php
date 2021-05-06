@@ -1,6 +1,14 @@
 <?php 
 error_reporting(E_ERROR | E_PARSE);
 
+//controle de sessão
+session_start();
+if(@$_SESSION["id"]==""){
+        header("location:index.php");
+}
+
+
+
 global $id_usuario;
 $id_usuario = $_GET["id"];
 include "includes/connect.php";
@@ -153,8 +161,9 @@ function deletemapa($id_dado){
       <div id="menuu">
             <ul>
               <li><a id="inicial" href="index.php" onclick="">Página inicial</a></li>
+              <li><a id="recurso" href="mapas.php" onclick="curSec(this.id)">Mapas</a></li>
               <li><a id="ajuda" href="#ajuda" onclick="curSec(this.id)">Ajuda</a></li>
-              <li><a id="logut" href="index.php" onclick="">Logut</a></li>
+              <li><a id="logut" href="index.php?sair=ok" onclick="">Logut</a></li>
             </ul>
 
         </div>
@@ -192,8 +201,8 @@ function deletemapa($id_dado){
                     <td><?php echo $dado['cidade']; ?></td>  
                     <td>
                     <a href="#editModal" at="<?php echo $dado["id_mapa"]; ?>" class="edit" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                   <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo $dado['id_mapa']; ?>" onclick="return confirm('Deseja mesmo excluir este mapa?');"class="delete" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a> 
-                    <a href="#" onCLick="window.open('<?php echo "http://localhost/Atlas_digital/".$dado['end_arquivo'];?>');"><i title="Visualizar" class="material-icons" data-toggle="tooltip">&#xe417;</i></a>
+                    <a href="?id=<?php echo $id_usuario; ?>&dado=<?php echo $dado['id_mapa']; ?>" onclick="return confirm('Deseja mesmo excluir este mapa?');"class="delete" data-toggle="modal" ><i class="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a> 
+                    <a target="_BLANK" href="<?=$dado['end_arquivo'];?>"><i title="Visualizar" class="material-icons" data-toggle="tooltip">&#xe417;</i></a>
                 </td>                
 				</tr>
                 
