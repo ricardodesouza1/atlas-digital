@@ -1,7 +1,5 @@
 <?php
   include "includes/connect.php";
-
-
 ?>
 
 <!DOCTYPE>
@@ -70,6 +68,10 @@ if(isset($_POST['email']))
         while ($resultado = pg_fetch_array($sql)) {
           $id = $resultado["id"];
         }
+        //Controle de sessão
+        session_start();
+        $_SESSION["id"]=$id;
+
         header('Location: processa.php?id='.$id.'');
         }else{
 
