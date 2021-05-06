@@ -62,7 +62,7 @@ include "includes/connect.php";
             function sucesso() {
                 var txt;
                 if (confirm("Usuário criado com sucesso! Fazer login?")) {
-                    window.location.href = "http://localhost/Atlas2021/web/login.php";
+                    window.location.href = "login.php";
                 } else {
                     
                 }
