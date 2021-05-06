@@ -1,3 +1,10 @@
+<?php
+    //Cotrole de sessão
+    session_start();
+    if(@$_SESSION["id"]!="")
+        header("location: processa.php?id=".$_SESSION["id"]);
+?>
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
