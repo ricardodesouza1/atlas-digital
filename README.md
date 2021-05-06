@@ -11,6 +11,7 @@ Toda a aplicação está contida em uma imagem Docker. Portanto, antes de inicia
 Para instalar o Atlas Digital InterativeGeo basta executa o arquivo <i>run.sh</i> contido neste projeto.
 
 ```
+$ chmod +x run.sh
 $ bash run.sh
 ```
 
