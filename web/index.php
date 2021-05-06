@@ -1,3 +1,18 @@
+<?php
+    //Controle de Sessão
+    session_start();
+
+    if(@$_GET["sair"]=="ok"){        
+        $_SESSION["id"]="";
+        session_destroy();
+    }
+
+    if(@$_SESSION["id"]!=""){
+        header("location: processa.php?id=".$_SESSION["id"]);
+    }    
+
+?>
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
